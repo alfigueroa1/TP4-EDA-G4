@@ -14,8 +14,12 @@ public:
 private:
     #define TX(x) (static_cast<void (genericFSM::* )(eventType*)>(&FSMString::x))
     
-    const fsmCell fsmTable[2][2] = {
-        {state0, TX(prueba0)},  {state1, TX(prueba1)}
+    const fsmCell fsmTable[4][6] = {
+		{state1, TX(prueba0)},  {FIN, TX(prueba1)}, {ERROR, TX(prueba1)}, {},					{},					  {ERROR, TX(prueba0)},
+		{},						{},					{ERROR, TX(prueba1)}, {state2, TX(prueba0)},{ERROR, TX(prueba0)}, {},
+		{state1, TX(prueba0)},	{FIN, TX(prueba1)}, {ERROR, TX(prueba1)}, {},					{},					  {ERROR, TX(prueba0)},
+		{},						{},					{ERROR, TX(prueba1)}, {},					{},					  {},
+	};
     };
         
     void prueba0(eventType* ev){
