@@ -8,6 +8,7 @@ enum{state0, state1, state2};
 /*************************************************************
  *                        OBJECT FSM
  ************************************************************/
+enum objectStates {INITOBJ, OBJSTRING, OBJVALUE, OBJERROR, OBJOK};
 class FSMObject :public genericFSM {
 
 public:
@@ -17,10 +18,12 @@ private:
 #define RX(x) (static_cast<void (genericFSM::* )(eventType*)>(&FSMObject::x))
 
 	const fsmCell fsmTable[4][6] = {
-		{state1, RX(prueba0)},  {FIN, RX(prueba1)}, {ERROR, RX(prueba1)}, {},					{},					  {ERROR, RX(prueba0)},
-		{},						{},					{ERROR, RX(prueba1)}, {state2, RX(prueba0)},{ERROR, RX(prueba0)}, {},
-		{state1, RX(prueba0)},	{FIN, RX(prueba1)}, {ERROR, RX(prueba1)}, {},					{},					  {ERROR, RX(prueba0)},
-		{},						{},					{ERROR, RX(prueba1)}, {},					{},					  {},
+		//"""							"}"					":"							","					OTHER
+		{OBJSTRING,RX(V_FSMString)},	{OBJOK, RX()},		{OBJERROR, RX()},			{OBJERROR, RX()},	{OBJERROR, RX()},//INITOBJECT
+		{OBJERROR,RX()},				{OBJERROR, RX()},	{OBJVALUE, RX(V_FSMValue)},	{OBJERROR, RX()},	{OBJERROR, RX()},//OBJSTRING
+		{OBJERROR,RX()},				{OBJOK, RX()},		{OBJERROR, RX()},			{OBJSTRING, RX()},	{OBJERROR, RX()},//OBJVALUE
+		{},					{},							{},					{},			{},					{},				//OBJERROR
+		{},					{},							{},					{},			{},					{}				//OBJOK
 	};
 
 	void prueba0(eventType* ev) {
@@ -51,16 +54,6 @@ private:
 		{state1, QX(prueba0)},	{FIN, QX(prueba1)}, {ERROR, QX(prueba1)}, {},					{},					  {ERROR, QX(prueba0)},
 		{},						{},					{ERROR, QX(prueba1)}, {},					{},					  {},
 	};
-
-	void prueba0(eventType* ev) {
-		int a = 0;
-		a++;
-	}
-
-	void prueba1(eventType* ev) {
-		int a = 0;
-		a++;
-	}
 };
 
 /*************************************************************
@@ -104,10 +97,12 @@ private:
     
     #define AX(x) (static_cast<void (genericFSM::* )(eventType*)>(&FSMArray::x))
     
-    const fsmCell fsmTable[][2] = {
+    const fsmCell fsmTable[4][3] = {
 		//recibir LBRACKET			//RECIBIR RBRACKET			//RECIBIR COMMA
 		{VALUE, AX(V_FSMValue)},	{ARRAYERROR, AX(arrayError)}, {ARRAYERROR, AX(arrayError)},	//INIT
 		{},							{ARRAYOK, AX(arrayOk)},		  {INIT, AX(arrayNothing)}		//VALUE
+		{},							{},							  {},							//ARRAYERROR
+		{},							{},							  {},							//ARRAYOK
 	};																							
         
     void arrayError(eventType* ev){
@@ -116,7 +111,9 @@ private:
 	void arrayNothing(eventType* ev) {
 		return;
 	}
-        
+	void arrayOk(eventType* ev) {
+		return;
+	}
     void prueba3(eventType* ev){
         int a=0;
         a++;
