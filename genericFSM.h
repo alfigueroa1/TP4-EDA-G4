@@ -25,8 +25,9 @@ public:
     stateTypes getState();
     char* getErrorCode();
 	virtual int filterEvents(eventType) = 0;
+protected:    
+	stateTypes state;
 private:
-    stateTypes state;
     unsigned int rowCount;
     unsigned int columnCount;
     fsmCell * FSMTAble; 

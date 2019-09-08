@@ -9,6 +9,20 @@ class FSMString:public genericFSM{
 
 public:
     FSMString():genericFSM(){}
+	virtual int filterEvents(eventType ev) {
+		switch (ev) {
+		case '/':
+			return 1;
+		case '"':
+			return 2;
+		case EOF:
+			return 3;
+		case 'f':case 'n':case 'r':case 't':case 'u':case 'b':
+			return 4;
+		default:
+			return 5;
+		}
+	}
 
 	virtual void cycle(eventType* ev) {
 		eventType evento;

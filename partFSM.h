@@ -84,59 +84,6 @@ private:
 	}
 
 };
-
-/*************************************************************
- *                        STRING FSM
- ************************************************************/
-class FSMString:public genericFSM{
-    
-public:
-    FSMString():genericFSM(){}
-
-	virtual int filterEvents(eventType ev) {
-		switch (ev) {
-		case '/':
-			return 1;
-		case '"':
-			return 2;
-		case EOF:
-			return 3;
-		case 'f':case 'n':case 'r':case 't':case 'u':case 'b':
-			return 4;
-		default:
-			return 5;
-		}
-	}
-
-	virtual void cycle(eventType* ev) {
-		eventType evento;
-		int i = 0;
-		evento = filterEvents(*ev);
-		i = evento;
-		state = FSMTable[(state * rowCount) + (evento - 1)].nextState;
-	}
-    
-private:
-    #define TX(x) (static_cast<void (genericFSM::* )(eventType*)>(&FSMString::x))
-    
-    //const fsmCell fsmTable[4][6] = {
-	const fsmCell fsmTable[24] = {
-		{state1, TX(prueba0)},  {FIN, TX(prueba1)}, {ERROR, TX(prueba1)}, {},					{},					  {ERROR, TX(prueba0)},
-		{},						{},					{ERROR, TX(prueba1)}, {state2, TX(prueba0)},{ERROR, TX(prueba0)}, {},
-		{state1, TX(prueba0)},	{FIN, TX(prueba1)}, {ERROR, TX(prueba1)}, {},					{},					  {ERROR, TX(prueba0)},
-		{},						{},					{ERROR, TX(prueba1)}, {},					{},					  {},
-   };
-        
-    void prueba0(eventType* ev){
-        int a=0;
-        a++;
-    }
-        
-    void prueba1(eventType* ev){
-        int a=0;
-        a++;
-    }
-};
 /*************************************************************
  *                        ARRAY FSM
  ************************************************************/
@@ -180,43 +127,6 @@ private:
         int a=0;
         a++;
     }
-};
-/*************************************************************
- *                        NUMBER FSM
- ************************************************************/
-class FSMNumber :public genericFSM {
-
-public:
-	FSMNumber() :genericFSM() {}
-
-	virtual void cycle(eventType* ev) {
-		eventType evento;
-		int i = 0;
-		evento = filterEvents(*ev);
-		i = evento;
-		state = FSMTable[(state * rowCount) + (evento - 1)].nextState;
-	}
-
-private:
-#define VX(x) (static_cast<void (genericFSM::* )(eventType*)>(&FSMNumber::x))
-
-	//const fsmCell fsmTable[4][6] = {
-	const fsmCell fsmTable[24] = {
-		{state1, VX(prueba0)},  {FIN, VX(prueba1)}, {ERROR, VX(prueba1)}, {},					{},					  {ERROR, VX(prueba0)},
-		{},						{},					{ERROR, VX(prueba1)}, {state2, VX(prueba0)},{ERROR, VX(prueba0)}, {},
-		{state1, VX(prueba0)},	{FIN, VX(prueba1)}, {ERROR, VX(prueba1)}, {},					{},					  {ERROR, VX(prueba0)},
-		{},						{},					{ERROR, VX(prueba1)}, {},					{},					  {},
-	};
-
-	void prueba0(eventType* ev) {
-		int a = 0;
-		a++;
-	}
-
-	void prueba1(eventType* ev) {
-		int a = 0;
-		a++;
-	}
 };
 
 #endif /* PARTFSM_H */
