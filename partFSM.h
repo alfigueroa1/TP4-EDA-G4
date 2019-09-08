@@ -8,7 +8,7 @@ enum{state0, state1, state2};
 /*************************************************************
  *                        OBJECT FSM
  ************************************************************/
-enum objectStates {INITOBJ, OBJSTRING, OBJVALUE, OBJERROR, OBJOK};
+enum objectStates {INITOBJ, OBJSTRING, OBJVALUE, OBJERROR, OBJOK, OBJARRAY};
 class FSMObject :public genericFSM {
 
 public:
@@ -17,21 +17,22 @@ public:
 private:
 #define RX(x) (static_cast<void (genericFSM::* )(eventType*)>(&FSMObject::x))
 
-	const fsmCell fsmTable[4][6] = {
+	//const fsmCell fsmTable[4][6] = {
+	const fsmCell fsmTable[20] = {
 		//"""							"}"					":"							","					OTHER
-		{OBJSTRING,RX(V_FSMString)},	{OBJOK, RX()},		{OBJERROR, RX()},			{OBJERROR, RX()},	{OBJERROR, RX()},//INITOBJECT
-		{OBJERROR,RX()},				{OBJERROR, RX()},	{OBJVALUE, RX(V_FSMValue)},	{OBJERROR, RX()},	{OBJERROR, RX()},//OBJSTRING
-		{OBJERROR,RX()},				{OBJOK, RX()},		{OBJERROR, RX()},			{OBJSTRING, RX()},	{OBJERROR, RX()},//OBJVALUE
-		{},					{},							{},					{},			{},					{},				//OBJERROR
-		{},					{},							{},					{},			{},					{}				//OBJOK
+		{OBJSTRING,RX(V_FSMString)},	{OBJOK,},		{OBJERROR,},				{OBJERROR,},	{OBJERROR,},//INITOBJECT
+		{OBJERROR,},					{OBJERROR,},	{OBJVALUE, RX(V_FSMValue)},	{OBJERROR,},	{OBJERROR,},//OBJSTRING
+		{OBJERROR,},					{OBJOK,},		{OBJERROR,},				{OBJSTRING,},	{OBJERROR,},//OBJVALUE
+		{},								{},				{},							{},				{},			//OBJERROR
+	//	{},								{},				{},							{},				{},			//OBJOK
 	};
 
-	void prueba0(eventType* ev) {
+	void V_FSMString(eventType* ev) {
 		int a = 0;
 		a++;
 	}
 
-	void prueba1(eventType* ev) {
+	void V_FSMValue(eventType* ev) {
 		int a = 0;
 		a++;
 	}
@@ -48,12 +49,24 @@ public:
 private:
 #define QX(x) (static_cast<void (genericFSM::* )(eventType*)>(&FSMValue::x))
 
-	const fsmCell fsmTable[4][6] = {
+	//const fsmCell fsmTable[4][6] = {
+	const fsmCell fsmTable[24] = {
 		{state1, QX(prueba0)},  {FIN, QX(prueba1)}, {ERROR, QX(prueba1)}, {},					{},					  {ERROR, QX(prueba0)},
 		{},						{},					{ERROR, QX(prueba1)}, {state2, QX(prueba0)},{ERROR, QX(prueba0)}, {},
 		{state1, QX(prueba0)},	{FIN, QX(prueba1)}, {ERROR, QX(prueba1)}, {},					{},					  {ERROR, QX(prueba0)},
 		{},						{},					{ERROR, QX(prueba1)}, {},					{},					  {},
 	};
+
+	void prueba0(eventType* ev) {
+		int a = 0;
+		a++;
+	}
+
+	void prueba1(eventType* ev) {
+		int a = 0;
+		a++;
+	}
+
 };
 
 /*************************************************************
@@ -67,7 +80,8 @@ public:
 private:
     #define TX(x) (static_cast<void (genericFSM::* )(eventType*)>(&FSMString::x))
     
-    const fsmCell fsmTable[4][6] = {
+    //const fsmCell fsmTable[4][6] = {
+	const fsmCell fsmTable[24] = {
 		{state1, TX(prueba0)},  {FIN, TX(prueba1)}, {ERROR, TX(prueba1)}, {},					{},					  {ERROR, TX(prueba0)},
 		{},						{},					{ERROR, TX(prueba1)}, {state2, TX(prueba0)},{ERROR, TX(prueba0)}, {},
 		{state1, TX(prueba0)},	{FIN, TX(prueba1)}, {ERROR, TX(prueba1)}, {},					{},					  {ERROR, TX(prueba0)},
@@ -97,10 +111,11 @@ private:
     
     #define AX(x) (static_cast<void (genericFSM::* )(eventType*)>(&FSMArray::x))
     
-    const fsmCell fsmTable[4][3] = {
+   // const fsmCell fsmTable[4][3] = {
+	const fsmCell fsmTable[12] = {
 		//recibir LBRACKET			//RECIBIR RBRACKET			//RECIBIR COMMA
 		{VALUE, AX(V_FSMValue)},	{ARRAYERROR, AX(arrayError)}, {ARRAYERROR, AX(arrayError)},	//INIT
-		{},							{ARRAYOK, AX(arrayOk)},		  {INIT, AX(arrayNothing)}		//VALUE
+		{},							{ARRAYOK, AX(arrayOk)},		  {INIT, AX(arrayNothing)},		//VALUE
 		{},							{},							  {},							//ARRAYERROR
 		{},							{},							  {},							//ARRAYOK
 	};																							
@@ -114,7 +129,7 @@ private:
 	void arrayOk(eventType* ev) {
 		return;
 	}
-    void prueba3(eventType* ev){
+    void V_FSMValue(eventType* ev){
         int a=0;
         a++;
     }
@@ -130,7 +145,8 @@ public:
 private:
 #define VX(x) (static_cast<void (genericFSM::* )(eventType*)>(&FSMNumber::x))
 
-	const fsmCell fsmTable[4][6] = {
+	//const fsmCell fsmTable[4][6] = {
+	const fsmCell fsmTable[24] = {
 		{state1, VX(prueba0)},  {FIN, VX(prueba1)}, {ERROR, VX(prueba1)}, {},					{},					  {ERROR, VX(prueba0)},
 		{},						{},					{ERROR, VX(prueba1)}, {state2, VX(prueba0)},{ERROR, VX(prueba0)}, {},
 		{state1, VX(prueba0)},	{FIN, VX(prueba1)}, {ERROR, VX(prueba1)}, {},					{},					  {ERROR, VX(prueba0)},

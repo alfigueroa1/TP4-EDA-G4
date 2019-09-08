@@ -3,6 +3,7 @@
 #define EVENTS_H
 
 typedef short eventType;
+typedef unsigned int uint;
 
 #define NOEVENT '$'
 

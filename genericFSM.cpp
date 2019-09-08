@@ -14,7 +14,7 @@ stateTypes genericFSM::getState(){
 }
 
 char* genericFSM:: getErrorCode(){
-    char* a = "Error";
+    char a[] = "Error";
     return a;
 }
 

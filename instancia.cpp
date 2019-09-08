@@ -1,5 +1,5 @@
 #include <iostream>
-#include "events.h"
+#include "partFSM.h"
 
 using namespace std;
 
@@ -10,4 +10,13 @@ int detectNewInstance(eventType){
         return a;
     else
         return 0;
+}
+
+void stackFSMsPop(int instance, genericFSM** stack, uint stackLevel) {
+	genericFSM* newFSM = NULL;
+	if (instance == 0)
+		FSMArray* newFSM = new (std::nothrow) FSMArray;
+	else if (instance == 1)
+		FSMString* newFSM = new (std::nothrow) FSMString;
+	stack[stackLevel + 1] = newFSM;
 }
