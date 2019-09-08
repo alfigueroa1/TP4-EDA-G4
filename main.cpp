@@ -42,6 +42,13 @@ int main(int argc, char** argv) {
 					stackLevel++;
 					last = stackLevel;
 					printf("StackLevel: %d\n", stackLevel);
+/*				else {					//(Reemplaza el ultimo else if)
+					stackFSMsPop(stackFSMs[stackLevel]->getState(), stackFSMs, stackLevel);
+					stackLevel++;
+					last = stackLevel;
+					printf("StackLevel: %d\n", stackLevel);
+				}
+*/
 				}
             }
         }
