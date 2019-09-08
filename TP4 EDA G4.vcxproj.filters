@@ -41,5 +41,11 @@
     <ClInclude Include="partFSM.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FSMNumber.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FSMString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

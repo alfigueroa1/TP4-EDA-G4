@@ -130,6 +130,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="events.h" />
+    <ClInclude Include="FSMNumber.h" />
+    <ClInclude Include="FSMString.h" />
     <ClInclude Include="genericFSM.h" />
     <ClInclude Include="instancia.h" />
     <ClInclude Include="partFSM.h" />
