@@ -10,6 +10,14 @@ class FSMString:public genericFSM{
 public:
     FSMString():genericFSM(){}
 
+	virtual void cycle(eventType* ev) {
+		eventType evento;
+		int i = 0;
+		evento = filterEvents(*ev);
+		i = evento;
+		state = FSMTable[(state * rowCount) + (evento - 1)].nextState;
+	}
+
 private:
 #define TX(x) (static_cast<void (genericFSM::* )(eventType*)>(&FSMString::x))
 

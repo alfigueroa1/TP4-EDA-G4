@@ -14,6 +14,14 @@ class FSMObject :public genericFSM {
 public:
 	FSMObject() :genericFSM() {}
 
+	virtual void cycle(eventType* ev) {
+		eventType evento;
+		int i = 0;
+		evento = filterEvents(*ev);
+		i = evento;
+		state = FSMTable[(state * rowCount) + (evento - 1)].nextState;
+	}
+
 private:
 #define RX(x) (static_cast<void (genericFSM::* )(eventType*)>(&FSMObject::x))
 
@@ -46,6 +54,14 @@ class FSMValue :public genericFSM {
 public:
 	FSMValue() :genericFSM() {}
 
+	virtual void cycle(eventType* ev) {
+		eventType evento;
+		int i = 0;
+		evento = filterEvents(*ev);
+		i = evento;
+		state = FSMTable[(state * rowCount) + (evento - 1)].nextState;
+	}
+
 private:
 #define QX(x) (static_cast<void (genericFSM::* )(eventType*)>(&FSMValue::x))
 
@@ -76,6 +92,29 @@ class FSMString:public genericFSM{
     
 public:
     FSMString():genericFSM(){}
+
+	virtual int filterEvents(eventType ev) {
+		switch (ev) {
+		case '/':
+			return 1;
+		case '"':
+			return 2;
+		case EOF:
+			return 3;
+		case 'f':case 'n':case 'r':case 't':case 'u':case 'b':
+			return 4;
+		default:
+			return 5;
+		}
+	}
+
+	virtual void cycle(eventType* ev) {
+		eventType evento;
+		int i = 0;
+		evento = filterEvents(*ev);
+		i = evento;
+		state = FSMTable[(state * rowCount) + (evento - 1)].nextState;
+	}
     
 private:
     #define TX(x) (static_cast<void (genericFSM::* )(eventType*)>(&FSMString::x))
@@ -106,6 +145,14 @@ class FSMArray:public genericFSM{
     
 public:
     FSMArray():genericFSM(){}
+
+	virtual void cycle(eventType* ev) {
+		eventType evento;
+		int i = 0;
+		evento = filterEvents(*ev);
+		i = evento;
+		state = FSMTable[(state * rowCount) + (evento - 1)].nextState;
+	}
     
 private:
     
@@ -141,6 +188,14 @@ class FSMNumber :public genericFSM {
 
 public:
 	FSMNumber() :genericFSM() {}
+
+	virtual void cycle(eventType* ev) {
+		eventType evento;
+		int i = 0;
+		evento = filterEvents(*ev);
+		i = evento;
+		state = FSMTable[(state * rowCount) + (evento - 1)].nextState;
+	}
 
 private:
 #define VX(x) (static_cast<void (genericFSM::* )(eventType*)>(&FSMNumber::x))

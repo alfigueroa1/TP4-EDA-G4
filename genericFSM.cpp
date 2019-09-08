@@ -19,6 +19,5 @@ char* genericFSM:: getErrorCode(){
 }
 
 void genericFSM:: cycle(eventType* ev){
-    int a=0;
-    a++;
+    
 }

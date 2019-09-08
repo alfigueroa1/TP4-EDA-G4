@@ -20,9 +20,11 @@ struct fsmCell{
 class genericFSM{
 public:
     genericFSM();
-    void cycle(eventType* ev);
+    //void cycle(eventType* ev);
+	virtual void cycle(eventType* ev) = 0;
     stateTypes getState();
     char* getErrorCode();
+	virtual int filterEvents(eventType) = 0;
 private:
     stateTypes state;
     unsigned int rowCount;
