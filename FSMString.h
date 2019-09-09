@@ -2,6 +2,10 @@
 #define _FSMSTRING_H
 
 #include "genericFSM.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <regex.h>
+
 
 enum{state0, state1, state2, state3, state4};
 
@@ -9,28 +13,84 @@ class FSMString:public genericFSM{
 
 public:
     FSMString():genericFSM(){}
-	virtual int filterEvents(eventType ev) {
-		switch (ev) {
-		case '/':
-			return 1;
-		case '"':
-			return 2;
-		case EOF:
-			return 3;
-		case 'f':case 'n':case 'r':case 't':case 'u':case 'b':
-			return 4;
-		default:
-			return 5;
-		}
-	}
 
 	virtual void cycle(eventType* ev) {
 		eventType evento;
 		int i = 0;
 		evento = filterEvents(*ev);
 		i = evento;
-		state = FSMTable[(state * rowCount) + (evento - 1)].nextState;
+		state = fsmTable[(state * rowCount) + (evento - 1)].nextState;
 	}
+
+    virtual int filterEvents(eventType ev) {
+        char * evento;
+        if(ev != EOF)
+            evento = (char*) ev;
+        else
+            return 0;
+        regex_t preg;
+        const char *regex_digit = "^[ac-eg-mo-qsv-zG-TV-Z]$";
+        const char *regex_quote = "^\"$";
+        const char *regex_rsolidus = "^\\\\$";
+        const char *regex_symb = "^[fnrt/]$";
+        const char *regex_u = "^[uU]$";
+        const char *regex_hex = "^[0-9a-fA-F]$";
+
+        /* Digit */
+        if (!regcomp (&preg, regex_digit, REG_NOSUB | REG_EXTENDED))
+        {
+            if( !regexec (&preg, evento, 0, NULL, 0)){
+                regfree (&preg);
+                return 1;
+            }
+        }
+
+        /* Quote */
+        if (!regcomp (&preg, regex_quote, REG_NOSUB | REG_EXTENDED))
+        {
+            if( !regexec (&preg, evento, 0, NULL, 0)){
+                regfree (&preg);
+                return 0;
+            }
+        }
+
+        /* Reverse solidus */
+        if (!regcomp (&preg, regex_rsolidus, REG_NOSUB | REG_EXTENDED))
+        {
+            if( !regexec (&preg, evento, 0, NULL, 0)){
+                regfree (&preg);
+                return 2;
+            }
+        }
+
+        /* U */
+        if (!regcomp (&preg, regex_u, REG_NOSUB | REG_EXTENDED))
+        {
+            if( !regexec (&preg, evento, 0, NULL, 0)){
+                regfree (&preg);
+                return 3;
+            }
+        }
+
+        /* Hexa */
+        if (!regcomp (&preg, regex_hex, REG_NOSUB | REG_EXTENDED))
+        {
+            if( !regexec (&preg, evento, 0, NULL, 0)){
+                regfree (&preg);
+                return 4;
+            }
+        }
+
+        /* Symbol */
+        if (!regcomp (&preg, regex_symb, REG_NOSUB | REG_EXTENDED))
+        {
+            if( !regexec (&preg, evento, 0, NULL, 0)){
+                regfree (&preg);
+                return 5;
+            }
+        }
+        return 0;
+    }
 
 private:
 #define TX(x) (static_cast<void (genericFSM::* )(eventType*)>(&FSMString::x))
@@ -56,6 +116,8 @@ private:
         int a=0;
         a++;
     }
+
+
 };
 
 #endif //_FSMSTRING_H
