@@ -130,11 +130,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="events.h" />
+    <ClInclude Include="FSMArray.h" />
     <ClInclude Include="FSMNumber.h" />
     <ClInclude Include="FSMString.h" />
     <ClInclude Include="genericFSM.h" />
     <ClInclude Include="instancia.h" />
     <ClInclude Include="partFSM.h" />
+    <ClInclude Include="FSMstates.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -8,6 +8,8 @@
 #include "partFSM.h"
 #include "events.h"
 #include "instancia.h"
+#include "FSMString.h"
+#include "FSMArray.h"
 
 using namespace std;
 

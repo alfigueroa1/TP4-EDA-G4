@@ -5,6 +5,7 @@
 #include "genericFSM.h"
 
 enum{state0, state1, state2};
+enum  getNewFSM{NEWOBJ, NEWARRAY, NEWVALUE, NEWSTRING, NEWNUM, };
 /*************************************************************
  *                        OBJECT FSM
  ************************************************************/
@@ -13,7 +14,20 @@ class FSMObject :public genericFSM {
 
 public:
 	FSMObject() :genericFSM() {}
-
+	virtual int filterEvents(eventType ev) {
+		switch (ev) {
+		case '"':
+			return 1;
+		case '}':
+			return 2;
+		case ':':
+			return 3;
+		case ',':
+			return 4;
+		default:
+			return 5;
+		}
+	}
 	virtual void cycle(eventType* ev) {
 		eventType evento;
 		int i = 0;
@@ -26,12 +40,12 @@ private:
 #define RX(x) (static_cast<void (genericFSM::* )(eventType*)>(&FSMObject::x))
 
 	//const fsmCell fsmTable[4][6] = {
-	const fsmCell fsmTable[20] = {
-		//"""							"}"					":"							","					OTHER
-		{OBJSTRING,RX(V_FSMString)},	{OBJOK,},		{OBJERROR,},				{OBJERROR,},	{OBJERROR,},//INITOBJECT
-		{OBJERROR,},					{OBJERROR,},	{OBJVALUE, RX(V_FSMValue)},	{OBJERROR,},	{OBJERROR,},//OBJSTRING
-		{OBJERROR,},					{OBJOK,},		{OBJERROR,},				{OBJSTRING,},	{OBJERROR,},//OBJVALUE
-		{},								{},				{},							{},				{},			//OBJERROR
+	const fsmCell FSMTable[20] = {
+		//"""							"}"				":"							","					OTHER
+		{OBJSTRING,RX(V_FSMString)},	{OBJOK,},		{OBJERROR,},				{OBJERROR,},	{OBJERROR,},//INITOBJECT	objectState0
+		{OBJERROR,},					{OBJERROR,},	{OBJVALUE, RX(V_FSMValue)},	{OBJERROR,},	{OBJERROR,},//OBJSTRING		objectState1
+		{OBJERROR,},					{OBJOK,},		{OBJERROR,},				{OBJSTRING,},	{OBJERROR,},//OBJVALUE		objectState2
+		{},								{},				{},							{},				{},			//OBJERROR		
 	//	{},								{},				{},							{},				{},			//OBJOK
 	};
 
@@ -84,50 +98,7 @@ private:
 	}
 
 };
-/*************************************************************
- *                        ARRAY FSM
- ************************************************************/
-enum arrayStates {INIT, VALUE, ARRAYERROR, ARRAYOK};
-class FSMArray:public genericFSM{
-    
-public:
-    FSMArray():genericFSM(){}
 
-	virtual void cycle(eventType* ev) {
-		eventType evento;
-		int i = 0;
-		evento = filterEvents(*ev);
-		i = evento;
-		state = FSMTable[(state * rowCount) + (evento - 1)].nextState;
-	}
-    
-private:
-    
-    #define AX(x) (static_cast<void (genericFSM::* )(eventType*)>(&FSMArray::x))
-    
-   // const fsmCell fsmTable[4][3] = {
-	const fsmCell fsmTable[12] = {
-		//recibir LBRACKET			//RECIBIR RBRACKET			//RECIBIR COMMA
-		{VALUE, AX(V_FSMValue)},	{ARRAYERROR, AX(arrayError)}, {ARRAYERROR, AX(arrayError)},	//INIT
-		{},							{ARRAYOK, AX(arrayOk)},		  {INIT, AX(arrayNothing)},		//VALUE
-		{},							{},							  {},							//ARRAYERROR
-		{},							{},							  {},							//ARRAYOK
-	};																							
-        
-    void arrayError(eventType* ev){
-		return;
-    }
-	void arrayNothing(eventType* ev) {
-		return;
-	}
-	void arrayOk(eventType* ev) {
-		return;
-	}
-    void V_FSMValue(eventType* ev){
-        int a=0;
-        a++;
-    }
-};
 
 #endif /* PARTFSM_H */
 //Receptackle of an idea
